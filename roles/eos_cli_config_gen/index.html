@@ -703,6 +703,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#speed-group-settings" class="md-nav__link">
+    Speed-Group Settings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#spanning-tree" class="md-nav__link">
     Spanning Tree
   </a>
@@ -1594,6 +1601,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#speed-group-settings" class="md-nav__link">
+    Speed-Group Settings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#spanning-tree" class="md-nav__link">
     Spanning Tree
   </a>
@@ -2028,6 +2042,7 @@
 <li><a href="#sflow">Sflow</a></li>
 <li><a href="#redundancy">Redundancy</a></li>
 <li><a href="#snmp-settings">SNMP Settings</a></li>
+<li><a href="#speed-group-settings">Hardware Speed-Group Settings</a></li>
 <li><a href="#spanning-tree">Spanning Tree</a></li>
 <li><a href="#platform">Platform</a></li>
 <li><a href="#tacacs-servers">Tacacs+ Servers</a></li>
@@ -2351,6 +2366,15 @@
       <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt; true | false &gt;</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt; vrf_name &gt;</span>
       <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt; true | false &gt;</span>
+</code></pre></div>
+<h4 id="speed-group-settings">Speed-Group Settings<a class="headerlink" href="#speed-group-settings" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">hardware</span><span class="p">:</span>
+  <span class="nt">speed_groups</span><span class="p">:</span>
+    <span class="nt">1</span><span class="p">:</span>
+      <span class="nt">serdes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;10g | 25g&gt;</span>
+    <span class="nt">2</span><span class="p">:</span>
+      <span class="nt">serdes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;10g | 25g&gt;</span>
+    <span class="l l-Scalar l-Scalar-Plain">...</span>
 </code></pre></div>
 <h4 id="spanning-tree">Spanning Tree<a class="headerlink" href="#spanning-tree" title="Permanent link">#</a></h4>
 <div class="highlight"><pre><span></span><code><span class="nt">spanning_tree</span><span class="p">:</span>

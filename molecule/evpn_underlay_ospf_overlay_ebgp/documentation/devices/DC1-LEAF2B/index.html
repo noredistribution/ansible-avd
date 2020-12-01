@@ -1483,6 +1483,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#bgp-neighbors" class="md-nav__link">
+    BGP Neighbors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#router-bgp-evpn-address-family" class="md-nav__link">
     Router BGP EVPN Address Family
   </a>
@@ -2637,6 +2644,33 @@ ip route vrf MGMT 0.0.0.0/0 192.168.200.5
 </tr>
 </tbody>
 </table>
+<h4 id="bgp-neighbors">BGP Neighbors<a class="headerlink" href="#bgp-neighbors" title="Permanent link">#</a></h4>
+<table>
+<thead>
+<tr>
+<th>Neighbor</th>
+<th>Remote AS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.255.1</td>
+<td>Inherited from peer group EVPN-OVERLAY-PEERS</td>
+</tr>
+<tr>
+<td>192.168.255.2</td>
+<td>Inherited from peer group EVPN-OVERLAY-PEERS</td>
+</tr>
+<tr>
+<td>192.168.255.3</td>
+<td>Inherited from peer group EVPN-OVERLAY-PEERS</td>
+</tr>
+<tr>
+<td>192.168.255.4</td>
+<td>Inherited from peer group EVPN-OVERLAY-PEERS</td>
+</tr>
+</tbody>
+</table>
 <h4 id="router-bgp-evpn-address-family">Router BGP EVPN Address Family<a class="headerlink" href="#router-bgp-evpn-address-family" title="Permanent link">#</a></h4>
 <h5 id="router-bgp-evpn-mac-vrfs">Router BGP EVPN MAC-VRFs<a class="headerlink" href="#router-bgp-evpn-mac-vrfs" title="Permanent link">#</a></h5>
 <h5 id="router-bgp-evpn-vrfs">Router BGP EVPN VRFs<a class="headerlink" href="#router-bgp-evpn-vrfs" title="Permanent link">#</a></h5>
@@ -2655,6 +2689,10 @@ router bgp 65102
    neighbor EVPN-OVERLAY-PEERS password 7 q+VNViP5i4rVjW1cxFv2wA==
    neighbor EVPN-OVERLAY-PEERS send-community
    neighbor EVPN-OVERLAY-PEERS maximum-routes 0
+   neighbor 192.168.255.1 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.255.2 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.255.3 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.255.4 peer group EVPN-OVERLAY-PEERS
    !
    address-family evpn
       neighbor EVPN-OVERLAY-PEERS activate

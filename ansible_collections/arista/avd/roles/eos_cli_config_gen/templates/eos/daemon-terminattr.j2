@@ -1,75 +1,71 @@
 {# eos - TerminAttr #}
 {% if daemon_terminattr is arista.avd.defined %}
-!
-{# Create list of non CVaaS server #}
-{%     set cvp_on_prem = namespace() %}
-{%     set cvp_on_prem.ips = [] %}
-{%     set cvaas = namespace() %}
-{%     set cvaas.ips = [] %}
 {%     set cvp_config = namespace() %}
-{%     for cvp_ip in daemon_terminattr.ingestgrpcurl.ips %}
-{%         if "arista.io" not in cvp_ip %}
-{%             do cvp_on_prem.ips.append(cvp_ip) %}
-{%         elif "arista.io" in cvp_ip %}
-{%             do cvaas.ips.append(cvp_ip) %}
-{%         endif %}
-{%     endfor %}
+!
 daemon TerminAttr
-{%     if cvp_on_prem.ips | length > 0 %}
-{%         set cvp_config.cli = "exec /usr/bin/TerminAttr -ingestgrpcurl=" %}
-{%         for cvp_ip in cvp_on_prem.ips %}
-{%             set cvp_config.cli = cvp_config.cli ~ cvp_ip ~ ":" ~ daemon_terminattr.ingestgrpcurl.port %}
-{%             if not loop.last %}
-{%                 set cvp_config.cli = cvp_config.cli ~ "," %}
-{%             endif %}
+{%     if daemon_terminattr.clusters | length > 1 %}
+{%         set cvp_config.cli = "exec /usr/bin/TerminAttr" %}
+{%         for cluster in daemon_terminattr.clusters %}
+{%             set cvp_config.cli = cvp_config.cli ~  " -cvopt " ~ cluster.name ~ ".cvaddr=" ~ cluster.cvaddrs | join(',') %}
+{%             if cluster.cvauth_key is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=key," ~ cluster.cvauth_key %}
+{%             elif cluster.cvauth_token_file is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=token," ~ cluster.cvauth_token_file %}
+{%             elif cluster.cvauth_token_secure_file is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=token-secure," ~ cluster.cvauth_token_secure_file %}
+{%             endif%}
 {%         endfor %}
-{%         set cvp_config.cli = cvp_config.cli ~ " -cvcompression=gzip" %}
-{%         if daemon_terminattr.ingestauth_key is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestauth=key," ~ daemon_terminattr.ingestauth_key %}
-{%         else %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestauth=key," %}
+{%     elif daemon_terminattr.clusters | length == 1 %}
+{%         set cvp_config.cli = "exec /usr/bin/TerminAttr -cvaddr=" ~ daemon_terminattr.clusters[0].cvaddrs | join(',') %}
+{%         if daemon_terminattr.clusters[0].cvauth_key is arista.avd.defined %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=key," ~ daemon_terminattr.clusters[0].cvauth_key %}
+{%         elif daemon_terminattr.clusters[0].cvauth_token_file is arista.avd.defined %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token," ~ daemon_terminattr.clusters[0].cvauth_token_file %}
+{%         elif daemon_terminattr.clusters[0].cvauth_token_secure_file is arista.avd.defined %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token-secure," ~ daemon_terminattr.clusters[0].cvauth_token_secure_file %}
 {%         endif %}
-{%         if daemon_terminattr.smashexcludes is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" ~ daemon_terminattr.smashexcludes %}
-{%         else %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" %}
-{%         endif %}
-{%         if daemon_terminattr.ingestexclude is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" ~ daemon_terminattr.ingestexclude %}
-{%         else %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" %}
-{%         endif %}
-{%         if daemon_terminattr.ingestvrf is arista.avd.defined %}
-{%                 set cvp_config.cli = cvp_config.cli ~ " -ingestvrf=" ~ daemon_terminattr.ingestvrf %}
-{%         endif %}
-{%         if daemon_terminattr.disable_aaa is arista.avd.defined(true) %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -disableaaa" %}
-{%         endif %}
-{%         set cvp_config.cli = cvp_config.cli ~ " -taillogs" %}
-   {{ cvp_config.cli }}
-{%     elif cvaas.ips | length > 0 %}
-{%         set cvp_config.cli = "exec /usr/bin/TerminAttr -cvaddr=" %}
-{%         for cvp_ip in cvaas.ips %}
-{%             set cvp_config.cli = cvp_config.cli ~ cvp_ip ~ ":443" %}
-{%             if not loop.last %}
-{%                 set cvp_config.cli = cvp_config.cli ~ "," %}
-{%             endif %}
-{%         endfor %}
-{%         set cvp_config.cli = cvp_config.cli ~ " -cvcompression=gzip -taillogs -cvauth=token-secure,/tmp/cv-onboarding-token" %}
-{%         if daemon_terminattr.smashexcludes is arista.avd.defined() %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" ~ daemon_terminattr.smashexcludes %}
-{%         else %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" %}
-{%         endif %}
-{%         if daemon_terminattr.ingestexclude is arista.avd.defined() %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" ~ daemon_terminattr.ingestexclude %}
-{%         else %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" %}
-{%         endif %}
-{%         if daemon_terminattr.ingestvrf is arista.avd.defined() %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -cvvrf=" ~ daemon_terminattr.ingestvrf %}
-{%         endif %}
-   {{ cvp_config.cli }}
 {%     endif %}
+{%     if daemon_terminattr.cvvrf is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvvrf=" ~ daemon_terminattr.cvvrf %}
+{%     endif%}
+{%     if daemon_terminattr.cvsourceip is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvsourceip=" ~ daemon_terminattr.cvsourceip %}
+{%     endif%}
+{%     if daemon_terminattr.cvgnmi is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvgnmi" %}
+{%     endif%}
+{%     if daemon_terminattr.cvobscurekeyfile is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvobscurekeyfile" %}
+{%     endif%}
+{%     if daemon_terminattr.disable_aaa is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -disableaaa" %}
+{%     endif%}
+{%     if daemon_terminattr.cvproxy is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvproxy=" ~ daemon_terminattr.cvproxy %}
+{%     endif%}
+{%     if daemon_terminattr.grpcaddr is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -grpcaddr=" ~ daemon_terminattr.grpcaddr %}
+{%     endif%}
+{%     if daemon_terminattr.grpcreadonly is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -grpcreadonly" %}
+{%     endif%}
+{%     if daemon_terminattr.smashexcludes  %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" ~ daemon_terminattr.smashexcludes %}
+{%     else %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -smashexcludes=" %}
+{%     endif %}
+{%     if daemon_terminattr.ingestexclude  %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" ~ daemon_terminattr.ingestexclude %}
+{%     else %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ingestexclude=" %}
+{%     endif %}
+{%     if daemon_terminattr.taillogs is arista.avd.defined  %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -taillogs=" ~ daemon_terminattr.taillogs %}
+{%     else %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -taillogs" %}
+{%     endif%}
+   {{ cvp_config.cli }}
    no shutdown
-{% endif %}
+{% endif%}
+
+

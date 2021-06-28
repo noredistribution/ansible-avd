@@ -4,9 +4,12 @@
 
 ### TerminAttr Daemon Summary
 
-| CV Compression | Ingest gRPC URL | Ingest Authentication Key | Smash Excludes | Ingest Exclude | Ingest VRF |  NTP VRF | AAA Disabled |
-| -------------- | --------------- | ------------------------- | -------------- | -------------- | ---------- | -------- | ------ |
-| gzip | {% for cvp_ip in daemon_terminattr.ingestgrpcurl.ips %}{{ cvp_ip }}:{{ daemon_terminattr.ingestgrpcurl.port }}{% if not loop.last %},{% endif %}{% endfor %} | {{ daemon_terminattr.ingestauth_key | arista.avd.default('UNSET') }} | {{ daemon_terminattr.smashexcludes }} | {{ daemon_terminattr.ingestexclude }} | {{ daemon_terminattr.ingestvrf }} | {{ daemon_terminattr.ingestvrf }} | {{ daemon_terminattr.disable_aaa | default (false) }} |
+| CV Compression | Ingest gRPC URL | Ingest Authentication | Smash Excludes | Ingest Exclude | Ingest VRF  | AAA Disabled |
+| --- | --- | --- | ---| --- | --- | --- |
+{% for cluster in daemon_terminattr.clusters %}
+| gzip | {{ cluster.cvaddrs | join(',') }} | {% if cluster.cvauth_key is arista.avd.defined %}key,{{cluster.cvauth_key }}{% elif cluster.cvauth_token_file is arista.avd.defined %}token,{{cluster.cvauth_token_file}}{% elif cluster.cvauth_token_secure_file is arista.avd.defined %}token-secure, {{cluster.cvauth_token_secure_file}}{% endif%} | {{ daemon_terminattr.smashexcludes }} | {{ daemon_terminattr.ingestexclude }} | {{ daemon_terminattr.cvvrf }} | {{ daemon_terminattr.disable_aaa | default (false) }} |
+{% endfor %}
+
 
 ### TerminAttr Daemon Device Configuration
 

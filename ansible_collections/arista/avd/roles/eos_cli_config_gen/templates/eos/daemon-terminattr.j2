@@ -3,26 +3,40 @@
 {%     set cvp_config = namespace() %}
 !
 daemon TerminAttr
+{%     set cvp_config.cli = "exec /usr/bin/TerminAttr" %}
 {%     if daemon_terminattr.clusters | length > 1 %}
-{%         set cvp_config.cli = "exec /usr/bin/TerminAttr" %}
-{%         for cluster in daemon_terminattr.clusters %}
-{%             set cvp_config.cli = cvp_config.cli ~  " -cvopt " ~ cluster.name ~ ".cvaddr=" ~ cluster.cvaddrs | join(',') %}
-{%             if cluster.cvauth_key is arista.avd.defined %}
-{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=key," ~ cluster.cvauth_key %}
-{%             elif cluster.cvauth_token_file is arista.avd.defined %}
-{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=token," ~ cluster.cvauth_token_file %}
-{%             elif cluster.cvauth_token_secure_file is arista.avd.defined %}
-{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster.name ~ ".cvauth=token-secure," ~ cluster.cvauth_token_secure_file %}
+{%         for cluster_name in daemon_terminattr.clusters | arista.avd.natural_sort %}
+{%             set cluster = daemon_terminattr.clusters[cluster_name] %}
+{%             set cvp_config.cli = cvp_config.cli ~  " -cvopt " ~ cluster_name ~ ".addr=" ~ cluster.cvaddrs | join(',') %}
+{%             if cluster.cvauth.method == 'key' %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=key," ~ cluster.cvauth.key %}
+{%             elif cluster.cvauth.method == 'token' %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=token," ~ cluster.cvauth.token_file %}
+{%             elif cluster.cvauth.method == 'secure-token' %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=token-secure," ~ cluster.cvauth.token_file %}
+{%             endif%}
+{%             if cluster.cvvrf is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".vrf=" ~ cluster.cvvrf %}
+{%             endif%}
+{%             if cluster.cvsourceip is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".sourceip=" ~ cluster.cvsourceip %}
+{%             endif%}
+{%             if cluster.cvproxy is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".proxy=" ~ cluster.cvproxy %}
+{%             endif%}
+{%             if cluster.cvobscurekeyfile is arista.avd.defined %}
+{%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".obscurekeyfile=" ~ cluster.cvobscurekeyfile %}
 {%             endif%}
 {%         endfor %}
-{%     elif daemon_terminattr.clusters | length == 1 %}
-{%         set cvp_config.cli = "exec /usr/bin/TerminAttr -cvaddr=" ~ daemon_terminattr.clusters[0].cvaddrs | join(',') %}
-{%         if daemon_terminattr.clusters[0].cvauth_key is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=key," ~ daemon_terminattr.clusters[0].cvauth_key %}
-{%         elif daemon_terminattr.clusters[0].cvauth_token_file is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token," ~ daemon_terminattr.clusters[0].cvauth_token_file %}
-{%         elif daemon_terminattr.clusters[0].cvauth_token_secure_file is arista.avd.defined %}
-{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token-secure," ~ daemon_terminattr.clusters[0].cvauth_token_secure_file %}
+{%     endif %}
+{%     if daemon_terminattr.cvaddrs is arista.avd.defined %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -cvaddr=" ~ daemon_terminattr.cvaddrs | join(',') %}
+{%         if daemon_terminattr.cvauth.method == 'key' %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=key," ~ daemon_terminattr.cvauth.key %}
+{%         elif daemon_terminattr.cvauth.method == 'token' %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token," ~ daemon_terminattr.cvauth.token_file %}
+{%         elif daemon_terminattr.cvauth.method == 'secure-token' %}
+{%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token-secure," ~ daemon_terminattr.cvauth.token_file %}
 {%         endif %}
 {%     endif %}
 {%     if daemon_terminattr.cvvrf is arista.avd.defined %}

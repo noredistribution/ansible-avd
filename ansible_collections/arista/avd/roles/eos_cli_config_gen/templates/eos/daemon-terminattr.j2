@@ -12,7 +12,7 @@ daemon TerminAttr
 {%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=key," ~ cluster.cvauth.key %}
 {%             elif cluster.cvauth.method == 'token' %}
 {%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=token," ~ cluster.cvauth.token_file %}
-{%             elif cluster.cvauth.method == 'secure-token' %}
+{%             elif cluster.cvauth.method == 'token-secure' %}
 {%                 set cvp_config.cli = cvp_config.cli ~ " -cvopt " ~ cluster_name ~ ".auth=token-secure," ~ cluster.cvauth.token_file %}
 {%             endif%}
 {%             if cluster.cvvrf is arista.avd.defined %}
@@ -35,7 +35,7 @@ daemon TerminAttr
 {%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=key," ~ daemon_terminattr.cvauth.key %}
 {%         elif daemon_terminattr.cvauth.method == 'token' %}
 {%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token," ~ daemon_terminattr.cvauth.token_file %}
-{%         elif daemon_terminattr.cvauth.method == 'secure-token' %}
+{%         elif daemon_terminattr.cvauth.method == 'token-secure' %}
 {%             set cvp_config.cli = cvp_config.cli ~ " -cvauth=token-secure," ~ daemon_terminattr.cvauth.token_file %}
 {%         endif %}
 {%     endif %}
@@ -77,6 +77,17 @@ daemon TerminAttr
 {%         set cvp_config.cli = cvp_config.cli ~ " -taillogs=" ~ daemon_terminattr.taillogs %}
 {%     else %}
 {%         set cvp_config.cli = cvp_config.cli ~ " -taillogs" %}
+{%     endif%}
+{%     if daemon_terminattr.ecodhcpaddr is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ecodhcpaddr=" ~ daemon_terminattr.ecodhcpaddr %}
+{%     endif%}
+{%     if daemon_terminattr.ipfix is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ipfix" %}
+{%     elif daemon_terminattr.ipfix is false %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ipfix=false" %}
+{%     endif%}
+{%     if daemon_terminattr.ipfixaddr is true %}
+{%         set cvp_config.cli = cvp_config.cli ~ " -ipfixaddr=" ~ daemon_terminattr.ipfixaddr %}
 {%     endif%}
    {{ cvp_config.cli }}
    no shutdown

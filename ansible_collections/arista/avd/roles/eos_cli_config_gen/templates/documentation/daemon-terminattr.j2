@@ -6,9 +6,11 @@
 
 | CV Compression | Ingest gRPC URL | Ingest Authentication | Smash Excludes | Ingest Exclude | Ingest VRF  | AAA Disabled |
 | --- | --- | --- | ---| --- | --- | --- |
-{% for cluster in daemon_terminattr.clusters %}
-| gzip | {{ cluster.cvaddrs | join(',') }} | {% if cluster.cvauth_key is arista.avd.defined %}key,{{cluster.cvauth_key }}{% elif cluster.cvauth_token_file is arista.avd.defined %}token,{{cluster.cvauth_token_file}}{% elif cluster.cvauth_token_secure_file is arista.avd.defined %}token-secure, {{cluster.cvauth_token_secure_file}}{% endif%} | {{ daemon_terminattr.smashexcludes }} | {{ daemon_terminattr.ingestexclude }} | {{ daemon_terminattr.cvvrf }} | {{ daemon_terminattr.disable_aaa | default (false) }} |
+{% for cluster_name in daemon_terminattr.clusters | arista.avd.natural_sort %}{% set cluster = daemon_terminattr.clusters[cluster_name] %}
+| gzip | {{ cluster.cvaddrs | join(',') }} | {% if cluster.cvauth.method == 'key' %}key,{{cluster.cvauth.key }}{% elif cluster.cvauth.method == 'token' %}token,{{cluster.cvauth.token_file}}{% elif cluster.cvauth.method == 'token-secure' %}token-secure, {{cluster.cvauth.token_file}}{% endif%} | {{ daemon_terminattr.smashexcludes }} | {{ daemon_terminattr.ingestexclude }} | {% if cluster.cvvrf is arista.avd.defined %}{{ cluster.cvvrf }}{% else %}{{ daemon_terminattr.cvvrf }}{% endif %} | {{ daemon_terminattr.disable_aaa | default (false) }} |
 {% endfor %}
+| gzip | {% if daemon_terminattr.cvaddrs is arista.avd.defined %} {{ daemon_terminattr.cvaddrs | join(',') }}{% endif %} | {% if daemon_terminattr.cvauth.method == 'key' %}{{ daemon_terminattr.cvauth.key }}{% elif daemon_terminattr.cvauth.method == 'token' %}{{ daemon_terminattr.cvauth.token_file }}{% elif daemon_terminattr.cvauth.method == 'token-secure' %}{{ daemon_terminattr.cvauth.token_file }}{% endif %} | {{ daemon_terminattr.smashexcludes }} | {{ daemon_terminattr.ingestexclude }} | {{ daemon_terminattr.cvvrf }} | |
+
 
 
 ### TerminAttr Daemon Device Configuration

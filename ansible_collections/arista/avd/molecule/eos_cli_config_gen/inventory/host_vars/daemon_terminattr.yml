@@ -1,10 +1,35 @@
 ---
 daemon_terminattr:
-  ingestgrpcurl:
-    ips:
-      -  10.10.10.10
-    port: 9910
-  ingestauth_key: key
-  ingestvrf: default
-  smashexcludes: test
-  ingestexclude: test
+  cvaddrs:
+      - 10.20.10.10:9910
+  clusters:
+    dublin:
+        cvaddrs:
+        - 10.10.10.10:9910
+        cvauth:
+          method: "token"
+          key: "arastra"
+          token_file: "/tmp/token"
+          cvobscurekeyfile: true
+        cvvrf: MGMT
+    cvaas:
+        cvaddrs:
+          - www.arista.io:443
+        cvauth:
+          method: "token-secure"
+          key: "arastra"
+          token_file: "/tmp/cv-onboarding-token"
+          cvproxy: http://arista:arista@10.1.1.1:3128
+  cvauth:
+    method: "token"
+    key: "arista"
+    token_file: "/tmp/token"
+  cvobscurekeyfile: true
+  cvvrf: MGMT
+  disable_aaa: true
+  grpcaddr: "MGMT/0.0.0.0:6042"
+  grpcreadonly: true
+  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+  taillogs: "/var/log/messages"
+  ipfix: false

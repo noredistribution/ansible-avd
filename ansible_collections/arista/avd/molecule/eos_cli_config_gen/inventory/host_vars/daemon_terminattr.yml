@@ -10,7 +10,7 @@ daemon_terminattr:
           method: "token"
           key: "arastra"
           token_file: "/tmp/token"
-          cvobscurekeyfile: true
+        cvobscurekeyfile: true
         cvvrf: MGMT
     cvaas:
         cvaddrs:
@@ -19,7 +19,7 @@ daemon_terminattr:
           method: "token-secure"
           key: "arastra"
           token_file: "/tmp/cv-onboarding-token"
-          cvproxy: http://arista:arista@10.1.1.1:3128
+        cvproxy: http://arista:arista@10.1.1.1:3128
   cvauth:
     method: "token"
     key: "arista"

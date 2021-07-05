@@ -1423,10 +1423,16 @@ daemon_terminattr:
   cvcompression: < gzip | none >
   # Encrypt the private key used for authentication to CloudVision
   cvobscurekeyfile: < true | false >
+  # Proxy server through which CloudVision is reachable. Useful when the CloudVision server is hosted in the cloud.
+  # The expected form is http://[user:password@]ip:port, e.g.: -cvproxy=http://arista:arista@10.83.12.78:3128
+  # Available as of TerminAttr v1.13.0
   cvproxy: < URL >
   # set source IP address in case of in-band managament
   cvsourceip: < IP Address >
+  # Name of the VRF to use to connect to CloudVision
   cvvrf: < vrf >
+  # Stream states from EOS GNMI servers (Openconfig) to CloudVision
+  cvgnmi: < true | false >
   # Disable AAA authorization and accounting. When setting this flag, all commands pushed
   # from CloudVision are applied directly to the CLI without authorization
   disable_aaa: < true | false >
@@ -1442,12 +1448,18 @@ daemon_terminattr:
   taillogs: < path | e.g. "/var/log/messages" >
   # ECO DHCP Collector address or ECO DHCP Fingerprint listening addressin standalone mode (default “127.0.0.1:67”)
   ecodhcpaddr: < IPV4_address:port >
+  # Enable IPFIX provider (default true)
+  # This flag is enabled by default and does not have to be added to the daemon configuration.
+  ipfix: < true | false >
   # ECO IPFIX Collector address to listen on to receive IPFIX packets (default “127.0.0.1:4739”)
-  # this flag is enabled by default and does not have to be added to the daemon configuration.
-  ipfix: < true | false > # default is true
-  # ECO IPFIX Collector address to listen on to receive IPFIX packets (default “127.0.0.1:4739”)
-  # Note that this flag is enabled by default and does not have to be added to the daemon configuration
+  # This flag is enabled by default and does not have to be added to the daemon configuration
   ipfixaddr: < IPV4_address:port >
+  # Enable sFlow provider (default true)
+  # This flag is enabled by default and does not have to be added to the daemon configuration
+  sflow: < true | false >
+  # ECO sFlow Collector address to listen on to receive sFlow packets (default “127.0.0.1:6343”)
+  # This flag is enabled by default and does not have to be added to the daemon configuration
+  sflowaddr: < IPV4_address:port >
 ```
 
 You can either provide a list of IPs/FQDNs to target on-premise Cloudvision cluster or use DNS name for your Cloudvision as a Service instance. Streaming to multiple clusters both on-prem and cloud service is supported.

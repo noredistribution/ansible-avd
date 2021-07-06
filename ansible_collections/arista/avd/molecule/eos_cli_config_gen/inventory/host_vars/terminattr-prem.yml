@@ -4,7 +4,9 @@ daemon_terminattr:
       - 10.10.10.8:9910
       - 10.10.10.9:9910
       - 10.10.10.10:9910
-  ingestauth_key: magickey
-  ingestvrf: mgt
+  cvauth:
+      method: "key"
+      key: magickey
+  cvvrf: mgt
   smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"

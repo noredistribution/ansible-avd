@@ -4,7 +4,7 @@
 !
 daemon TerminAttr
 {%     set cvp_config.cli = "exec /usr/bin/TerminAttr" %}
-{%     if daemon_terminattr.clusters | length > 1 %}
+{%     if daemon_terminattr.clusters | arista.avd.natural_sort %}
 {%         for cluster_name in daemon_terminattr.clusters | arista.avd.natural_sort %}
 {%             set cluster = daemon_terminattr.clusters[cluster_name] %}
 {%             set cvp_config.cli = cvp_config.cli ~  " -cvopt " ~ cluster_name ~ ".addr=" ~ cluster.cvaddrs | join(',') %}

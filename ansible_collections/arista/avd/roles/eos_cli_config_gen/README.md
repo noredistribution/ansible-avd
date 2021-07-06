@@ -1432,6 +1432,7 @@ daemon_terminattr:
   # Name of the VRF to use to connect to CloudVision
   cvvrf: < vrf >
   # Stream states from EOS GNMI servers (Openconfig) to CloudVision
+  # Available as of TerminAttr v1.13.1
   cvgnmi: < true | false >
   # Disable AAA authorization and accounting. When setting this flag, all commands pushed
   # from CloudVision are applied directly to the CLI without authorization
@@ -1463,6 +1464,8 @@ daemon_terminattr:
 ```
 
 You can either provide a list of IPs/FQDNs to target on-premise Cloudvision cluster or use DNS name for your Cloudvision as a Service instance. Streaming to multiple clusters both on-prem and cloud service is supported.
+
+> Note For TerminAttr version recommendation and EOS compatibility matrix, please refer to the latest TerminAttr Release Notes which always contain the latest recommended versions and minimum required versions per EOS release.
 
 #### Custom Daemons
 

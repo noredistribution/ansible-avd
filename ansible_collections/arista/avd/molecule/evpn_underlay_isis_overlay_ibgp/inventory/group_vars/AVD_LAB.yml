@@ -13,13 +13,6 @@ local_users:
     role: network-admin
     sha512_password: "$6$rZKcbIZ7iWGAWTUM$TCgDn1KcavS0s.OV8lacMTUkxTByfzcGlFlYUWroxYuU7M/9bIodhRO7nXGzMweUxvbk8mJmQl8Bh44cRktUj."
 
-# Cloud Vision server
-cvp_instance_ips:
-  - 192.168.200.11
-
-cvp_ingestauth_key: telarista
-terminattr_disable_aaa: true
-
 # OOB Management network default gateway.
 mgmt_gateway: 192.168.200.5
 
@@ -31,3 +24,15 @@ name_servers:
 # NTP Servers IP or DNS name, first NTP server will be prefered, and sourced from Managment
 ntp_servers:
   - 192.168.200.5
+
+# TerminAttr config
+daemon_terminattr:
+  cvaddrs:
+    - 192.168.200.11:9910
+  cvauth:
+      method: "key"
+      key: telarista
+  cvvrf: MGMT
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  disable_aaa: false
